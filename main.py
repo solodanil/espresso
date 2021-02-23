@@ -1,16 +1,43 @@
-# This is a sample Python script.
+import sys
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+from PyQt5.QtSql import *
+from PyQt5.QtWidgets import *
 
 
-# Press the green button in the gutter to run the script.
+class Example(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        # Зададим тип базы данных
+        db = QSqlDatabase.addDatabase('QSQLITE')
+        # Укажем имя базы данных
+        db.setDatabaseName('coffee.sqlite')
+        # И откроем подключение
+        db.open()
+
+        # QTableView - виджет для отображения данных из базы
+        view = QTableView(self)
+        # Создадим объект QSqlTableModel, 
+        # зададим таблицу, с которой он будет работать,
+        #  и выберем все данные
+        model = QSqlTableModel(self, db)
+        model.setTable('main')
+        model.select()
+
+        # Для отображения данных на виджете 
+        # свяжем его и нашу модель данных
+        view.setModel(model)
+        view.move(10, 10)
+        view.resize(617, 315)
+
+        self.setGeometry(300, 100, 650, 450)
+        self.setWindowTitle('Пример работы с QtSql')
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app = QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    sys.exit(app.exec())
